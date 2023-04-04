@@ -5,6 +5,8 @@ import { ContactList } from './ContactList/ContactList';
 import PropTypes from 'prop-types';
 import { nanoid } from "nanoid";
 
+const LS_KEY = 'contacts-list';
+
 export class App extends Component {
 
   state = { 
@@ -54,6 +56,21 @@ export class App extends Component {
     }
     
     this.reset();
+  }
+ 
+  componentDidUpdate(_, prevState) {
+    const { contacts } = this.state;
+    
+    if (prevState.contacts !== contacts) {
+      localStorage.setItem(LS_KEY, JSON.stringify(contacts));
+    }
+  }
+
+  componentDidMount() {
+    const contacts = JSON.parse(localStorage.getItem(LS_KEY))
+    if (contacts) {
+      this.setState({ contacts: contacts })
+    }
   }
 
   handleDelete = id => {
